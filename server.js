@@ -2,6 +2,7 @@ var http = require('http')
 var fs = require('fs')
 var url = require('url')
 var port = process.argv[2]
+var qiniu = require('qiniu')
 
 if (!port) {
     console.log('请指定端口号好不啦？\nnode server.js 8888 这样不会吗？')
@@ -25,7 +26,7 @@ var server = http.createServer(function (request, response) {
         response.statusCode = 200
         response.setHeader('Content-Type', 'text/json;charset=utf-8')
         response.setHeader('Access-Control-Allow-Origin', '*')
-
+        response.removeHeader('Date')
         var config = fs.readFileSync('./qiniu-key.json')
         config = JSON.parse(config)
 
