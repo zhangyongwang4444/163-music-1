@@ -49,6 +49,7 @@
         console.log(Qiniu)
         //引入Plupload 、qiniu.js后
         var uploader = Qiniu.uploader({
+            disable_statistics_report: true,
             runtimes: 'html5,flash,html4',    //上传模式,依次退化
             browse_button: 'xxx',       //上传选择的点选按钮，**必需**
             // uptoken_url: '/token',            //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
