@@ -9,9 +9,16 @@
 </head>
 
 <body>
+    <audio controls src="http://pdwjz1f1z.bkt.clouddn.com/%E8%AE%B8%E5%B7%8D%20-%20%E6%95%85%E4%B9%A1.mp3"></audio>
+    <div id="yyy">
+        <button id="xxx">upload</button>
+    </div>
+
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
     <script>
+
         console.log(window.AV)
+        //项目初始化
         var APP_ID = '4NMUtmslXR6DWLj9CjdwLJ1b-gzGzoHsz';
         var APP_KEY = 'caPKKYOFqskCK3hChOoJkdmC';
 
@@ -20,20 +27,26 @@
             appKey: APP_KEY
         });
 
-        //创建数据库
-        var TestObject = AV.Object.extend('Playlist');
-        //创建一条记录
-        var testObject = new TestObject();
-        //保存记录
-        testObject.save({
-            name:'test',
-            cover:'test',
-            creatorId:'test',
-            description:'test',
-            songs:['1','2']
-        }).then(function (object) {
-            alert('LeanCloud Rocks!');
-        },()=>{alert('fuck')})
+        // //创建数据库
+        // var TestObject = AV.Object.extend('Playlist');
+        // //创建一条记录
+        // var testObject = new TestObject();
+        // //保存记录
+        // testObject.save({
+        //     name:'test',
+        //     cover:'test',
+        //     creatorId:'test',
+        //     description:'test',
+        //     songs:['1','2']
+        // }).then(function (object) {
+        //     alert('LeanCloud Rocks!');
+        // },()=>{alert('fuck')})
+    </script>
+    <script src="../node_modules/plupload/js/plupload.min.js"></script>
+    <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
+    <script>
+        console.log(Qiniu)
+
     </script>
 </body>
 
