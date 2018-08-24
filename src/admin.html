@@ -2,6 +2,26 @@
 <html lang="zh-Hans">
 
 <head>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        #yyy{
+            padding: 50px 80px ;
+            border:2px dashed #ddd;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            flex-direction: column;
+            line-height: 40px;
+        }
+        #yyy span{
+            cursor: pointer;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -9,10 +29,13 @@
 </head>
 
 <body>
+    <audio controls src="http://pdwjz1f1z.bkt.clouddn.com/%E6%B0%B8%E5%BD%ACRyan.B%20-%20%E5%86%8D%E4%B9%9F%E6%B2%A1%E6%9C%89.mp3"></audio>
     <audio controls src="http://pdwjz1f1z.bkt.clouddn.com/%E8%AE%B8%E5%B7%8D%20-%20%E6%95%85%E4%B9%A1.mp3"></audio>
     <div id="yyy">
-        <button id="xxx">upload</button>
+        <span id="xxx">点击或拖曳文件</span>
+        <p>文件大小不能超过40mb</p>
     </div>
+    <div id="uploadStatus"></div>
 
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
     <script>
@@ -42,6 +65,7 @@
         //     alert('LeanCloud Rocks!');
         // },()=>{alert('fuck')})
     </script>
+
     <script src="../vendors/moxie.js"></script>
     <script src="../node_modules/plupload/js/plupload.min.js"></script>
     <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
@@ -59,7 +83,7 @@
             domain: 'http://qiniu-plupload.qiniudn.com/',   //bucket 域名，下载资源时用到，**必需**
             get_new_uptoken: false,  //设置上传文件的时候是否每次都重新获取新的token
             // container: 'yyy',           //上传区域DOM ID，默认是browser_button的父元素，
-            max_file_size: '80mb',           //最大文件体积限制
+            max_file_size: '40mb',           //最大文件体积限制
             // flash_swf_url: 'js/plupload/Moxie.swf',  //引入flash,相对路径
             // max_retries: 3,                   //上传失败最大重试次数
             dragdrop: true,                   //开启可拖曳上传
@@ -77,9 +101,11 @@
                 },
                 'UploadProgress': function (up, file) {
                     // 每个文件上传时,处理相关的事情
+                    uploadStatus.textContent = '上传中'
                 },
                 'FileUploaded': function (up, file, info) {
                     // 每个文件上传成功后,处理相关的事情
+                    uploadStatus.textContent = '上传完毕'
                     // 其中 info.response 是文件上传成功后，服务端返回的json，形式如
                     // {
                     //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
@@ -97,14 +123,14 @@
                 'UploadComplete': function () {
                     //队列文件处理完毕后,处理相关的事情
                 },
-                'Key': function (up, file) {
-                    // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                    // 该配置必须要在 unique_names: false , save_key: false 时才生效
+                // 'Key': function (up, file) {
+                //     // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
+                //     // 该配置必须要在 unique_names: false , save_key: false 时才生效
 
-                    var key = "";
-                    // do something with key here
-                    return key
-                }
+                //     var key = "zuimeideqidai";
+                //     // do something with key here
+                //     return key
+                // }
             }
         });
     </script>
