@@ -11,19 +11,19 @@
                     <label>
                         歌名
                     </label>
-                    <input name="name" type="text" value="__key__">
+                    <input name="name" type="text" value="__name__">
                 </div>
                 <div class="row">
                     <label>
                         歌手
                     </label>
-                    <input name="singer" type="text">
+                    <input name="singer" type="text" value="__singer__">
                 </div>
                 <div class="row">
                     <label>
                         外链
                     </label>
-                    <input name="url" type="text" value="__link__">
+                    <input name="url" type="text" value="__url__">
                 </div>
                 <div class="row actions">
                     <button type="submit">保存</button>
@@ -31,12 +31,15 @@
             </form>
         `,
         render(data = {}) {
-            let placeholders = ['key', 'link']
+            let placeholders = ['name', 'singer', 'url', 'id']
             let html = this.template
             placeholders.map((string) => {
                 html = html.replace(`__${string}__`, data[string] || '')
             })
             $(this.el).html(html)
+        },
+        reset() {
+            this.render({})
         }
     }
 
@@ -54,7 +57,25 @@
             song.set('url', data.url);
             // 设置优先级
             // song.set('priority', 1);
-            song.save().then((newSong) => {
+            return song.save().then((newSong) => {
+                let { id, attributes } = newSong
+                // this.data = {
+                //     id,
+                //     ...attributes
+                // }
+                // this.data.id = id
+                // this.data.name = attributes.name
+                // this.data.singer = attributes.singer
+                // this.data.url = attributes.url
+
+                Object.assign(this.data, {
+                    id,
+                    ...attributes,
+                    // name:attributes.name,
+                    // singer:attributes.singer,
+                    // url:attributes.url
+                })
+
                 console.log(newSong);
             }, (error) => {
                 console.error(error);
@@ -70,7 +91,9 @@
             this.view.render(this.model.data)
             this.bindEvents()
             window.eventHub.on('upload', (data) => {
-                this.reset(data)
+                this.model.data = data
+                console.log(data)
+                this.view.render(this.model.data)
             })
         },
         reset(data) {
@@ -85,6 +108,14 @@
                     data[string] = this.view.$el.find(`[name="${string}"]`).val()
                 })
                 this.model.create(data)
+                    .then(() => {
+                        console.log(this.model.data)
+                        this.view.reset()
+                       
+                        let string = JSON.stringify(this.model.data)   //深拷贝
+                        let object = JSON.parse(string)                //深拷贝
+                        window.eventHub.emit('create', object)
+                    })
             })
         }
     }
