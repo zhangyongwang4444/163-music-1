@@ -95,6 +95,12 @@
                 console.log(data)
                 this.view.render(this.model.data)
             })
+            window.eventHub.on('select', (data) => {
+                console.log('song form 知道了用户选了')
+                console.log(data)
+                this.model.data = data
+                this.view.render(this.model.data)
+            })
         },
         reset(data) {
             this.view.render(data)
@@ -111,7 +117,7 @@
                     .then(() => {
                         console.log(this.model.data)
                         this.view.reset()
-                       
+
                         let string = JSON.stringify(this.model.data)   //深拷贝
                         let object = JSON.parse(string)                //深拷贝
                         window.eventHub.emit('create', object)
