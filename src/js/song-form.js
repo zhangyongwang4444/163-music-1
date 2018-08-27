@@ -50,6 +50,16 @@
 
     let model = {
         data: { name: '', singer: '', url: '', id: '' },
+        update(data) {
+            var song = AV.Object.createWithoutData('Song', this.data.id)
+            song.set('name', this.data.name)
+            song.set('singer', this.data.singer)
+            song.set('url', this.data.url)
+            return song.save().then((response) => {
+                Object.assign(this.data, data)
+                return response
+            })
+        },
         create(data) {
             // 声明类型
             var Song = AV.Object.extend('Song');
@@ -102,10 +112,10 @@
                 this.view.render(this.model.data)
             })
             window.eventHub.on('new', (data) => {
-                if(this.model.data.id){
-                    this.model.data={name: '', url: '', id: '', singer: ''}
-                }else{
-                    Object.assign(this.model.data,data)
+                if (this.model.data.id) {
+                    this.model.data = { name: '', url: '', id: '', singer: '' }
+                } else {
+                    Object.assign(this.model.data, data)
                 }
                 this.view.render(this.model.data)
             })
@@ -113,23 +123,43 @@
         reset(data) {
             this.view.render(data)
         },
+        create() {
+            let needs = 'name singer url'.split(' ')
+            let data = {}
+            needs.map((string) => {
+                data[string] = this.view.$el.find(`[name="${string}"]`).val()
+            })
+            this.model.create(data)
+                .then(() => {
+                    console.log(this.model.data)
+                    this.view.reset()
+                    let string = JSON.stringify(this.model.data)   //深拷贝
+                    let object = JSON.parse(string)                //深拷贝
+                    window.eventHub.emit('create', object)
+                })
+        },
+        update() {
+            let needs = 'name singer url'.split(' ')
+            let data = {}
+            needs.map((string) => {
+                data[string] = this.view.$el.find(`[name="${string}"]`).val()
+            })
+            this.model.update(data)
+                .then(() => {
+                    window.eventHub.emit('update', JSON.parse(JSON.stringify(this.model.data))) //深拷贝
+                })
+        },
         bindEvents() {
             this.view.$el.on('submit', 'form', (e) => {
                 e.preventDefault()
-                let needs = 'name singer url'.split(' ')
-                let data = {}
-                needs.map((string) => {
-                    data[string] = this.view.$el.find(`[name="${string}"]`).val()
-                })
-                this.model.create(data)
-                    .then(() => {
-                        console.log(this.model.data)
-                        this.view.reset()
-
-                        let string = JSON.stringify(this.model.data)   //深拷贝
-                        let object = JSON.parse(string)                //深拷贝
-                        window.eventHub.emit('create', object)
-                    })
+                if (this.model.data.id) {
+                    console.log('id 存在')
+                    this.update()
+                } else {
+                    console.log('id 不存在')
+                    this.create()
+                }
+                return
             })
         }
     }
