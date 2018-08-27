@@ -7,10 +7,10 @@
         render(data) {
             let $el = $(this.el)
             $el.html(this.template)
-            let {songs}  = data
-            let liList = songs.map((song)=>$('<li></li>').text(song.name))
+            let { songs } = data
+            let liList = songs.map((song) => $('<li></li>').text(song.name))
             $el.find('ul').empty()
-            liList.map((domLi)=>{
+            liList.map((domLi) => {
                 $el.find('ul').append(domLi)
             })
             // $(this.el).html(this.template)
@@ -22,7 +22,16 @@
 
     let model = {
         data: {
-            songs: [ ]
+            songs: []
+        },
+        find() {
+            var query = new AV.Query('Song');
+            return query.find().then((songs) => {
+                this.data.songs = songs.map((song) => {
+                    return { id: song.id, ...song.attributes }
+                })
+                return songs
+            })
         }
     }
 
@@ -39,6 +48,12 @@
                 this.model.data.songs.push(songData)
                 this.view.render(this.model.data)
             })
+            this.model.find().then(() => {
+                console.log('-------------')
+                console.log(this.model.data)
+                this.view.render(this.model.data)
+            })
+
         }
     }
     controller.init(view, model)
