@@ -72,9 +72,7 @@
             })
         },
         bindEventHub() {
-            window.eventHub.on('upload', () => {
-                this.view.clearActive()
-            })
+          
             window.eventHub.on('create', (songData) => {
                 console.log(songData)
                 this.model.data.songs.push(songData)

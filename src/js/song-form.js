@@ -94,20 +94,18 @@
             this.model = model
             this.view.render(this.model.data)
             this.bindEvents()
-            window.eventHub.on('upload', (data) => {
-                this.model.data = data
-                console.log(data)
-                this.view.render(this.model.data)
-            })
+
             window.eventHub.on('select', (data) => {
                 console.log('song form 知道了用户选了')
                 console.log(data)
                 this.model.data = data
                 this.view.render(this.model.data)
             })
-            window.eventHub.on('new', () => {
-                this.model.data = {
-                    name: '', url: '', id: '', singer: ''
+            window.eventHub.on('new', (data) => {
+                if(this.model.data.id){
+                    this.model.data={name: '', url: '', id: '', singer: ''}
+                }else{
+                    Object.assign(this.model.data,data)
                 }
                 this.view.render(this.model.data)
             })
