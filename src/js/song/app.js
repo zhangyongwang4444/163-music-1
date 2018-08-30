@@ -1,37 +1,43 @@
 {
     let view = {
         el: '#app',
-        template: `
-        <audio  src={{url}}></audio>
-        <div>
-            <button class="play">播放</button>
-            <button class="pause">暂停</button>
-        </div>
-        `,
         render(data) {
-            $(this.el).html(this.template.replace('{{url}}', data.url))
+            let { song, status } = data
+            console.log(song)
+            $(this.el).css('background-image', `url(${song.cover})`)
+            $(this.el).find('img.cover').attr('src', song.cover)
+            if ($(this.el).find('audio').attr('src') !== song.url) {
+                $(this.el).find('audio').attr('src', song.url)
+            }
 
+            if (status === 'playing') {
+                $(this.el).find('.disc-container').addClass('playing')
+            } else {
+                $(this.el).find('.disc-container').removeClass('playing')
+            }
         },
         play() {
-            let audio = $(this.el).find('audio')[0]
-            audio.play()
+            $(this.el).find('audio')[0].play()
         },
         pause() {
-            let audio = $(this.el).find('audio')[0]
-            audio.pause()
+            $(this.el).find('audio')[0].pause()
         }
+
     }
     let model = {
         data: {
-            id: '',
-            name: '',
-            singer: '',
-            url: ''
+            song: {
+                id: '',
+                name: '',
+                singer: '',
+                url: ''
+            },
+            status: 'paused'
         },
         get(id) {
             var query = new AV.Query('Song');
             return query.get(id).then((song) => {
-                Object.assign(this.data, { id: song.id, ...song.attributes })
+                Object.assign(this.data.song, { id: song.id, ...song.attributes })
                 return song
             }, function (error) {
             })
@@ -45,18 +51,23 @@
 
             this.model.get(id).then(() => {
                 this.view.render(this.model.data)
-            }),
-                this.bindEvents()
+
+            })
+            this.bindEvents()
+
         },
         bindEvents() {
-            $(this.view.el).on('click', '.play', () => {
-                console.log('播放')
+            $(this.view.el).on('click', '.icon-play', () => {
+                this.model.data.status = 'playing'
+                this.view.render(this.model.data)
                 this.view.play()
             })
-            $(this.view.el).on('click', '.pause', () => {
-                console.log('暂停')
+            $(this.view.el).on('click', '.icon-pause', () => {
+                this.model.data.status = 'paused'
+                this.view.render(this.model.data)
                 this.view.pause()
             })
+
         },
         getSongId() {
             let search = window.location.search
