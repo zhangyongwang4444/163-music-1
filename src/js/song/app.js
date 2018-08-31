@@ -8,6 +8,10 @@
             $(this.el).find('img.cover').attr('src', song.cover)
             if ($(this.el).find('audio').attr('src') !== song.url) {
                 $(this.el).find('audio').attr('src', song.url)
+                let audio = $(this.el).find('audio').attr('src', song.url).get(0)
+                audio.onended = () => {
+                    window.eventHub.emit('songEnd')
+                }
             }
 
             if (status === 'playing') {
@@ -67,6 +71,12 @@
                 this.view.render(this.model.data)
                 this.view.pause()
             })
+            window.eventHub.on('songEnd',()=>{
+                this.model.data.status = 'paused'
+                this.view.render(this.model.data)
+                
+            })
+
 
         },
         getSongId() {
