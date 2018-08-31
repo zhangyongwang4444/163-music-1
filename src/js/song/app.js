@@ -54,7 +54,7 @@
             let p
             for (let i = 0; i < allP.length; i++) {
                 if (i === allP.length - 1) {
-                    // console.log(allP[i])
+                    console.log(allP[i])
                     p = allP[i]
                     break
                 } else {
@@ -67,7 +67,7 @@
                     }
                 }
             }
-            console.log(p)
+            // console.log(p)
             //
             let pHeight = p.getBoundingClientRect().top
             let linesHeight = this.$el.find('.lyric  > .lines')[0].getBoundingClientRect().top
