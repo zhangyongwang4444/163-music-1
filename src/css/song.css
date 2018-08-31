@@ -34,7 +34,8 @@
 
 .song-description{
 	flex-grow: 1;
-	color: #AEABAC;
+	/* color: #AEABAC; */
+	color:#E93118;
 	text-align: center;
 	line-height: 2;
 	margin-top: 20px;

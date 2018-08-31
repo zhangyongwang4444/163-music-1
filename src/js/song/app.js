@@ -15,6 +15,9 @@
                 audio.onended = () => {
                     window.eventHub.emit('songEnd')
                 }
+                audio.ontimeupdate = () => {
+                    this.showLyric(audio.currentTime)
+                }
             }
 
             if (status === 'playing') {
@@ -23,6 +26,58 @@
                 this.$el.find('.disc-container').removeClass('playing')
             }
             this.$el.find('.song-description > h1').text(song.name)
+
+            let { lyrics } = song
+            lyrics.split('\n').map((string) => {
+                let p = document.createElement('p')
+                let regex = /\[([\d:.]+)\](.+)/
+                let matches = string.match(regex)
+                console.log(matches)
+                if (matches) {
+                    p.textContent = matches[2]
+                    let time = matches[1]
+                    let parts = time.split(':')
+                    let minutes = parts[0]
+                    let seconds = parts[1]
+                    let newTime = parseFloat(minutes, 10) * 60 + parseFloat(seconds, 10)
+                    p.setAttribute('data-time', newTime)
+                } else {
+                    p.textContent = string
+                }
+                this.$el.find('.lyric > .lines').append(p)
+            })
+        },
+        showLyric(time) {
+            let allP = this.$el.find('.lyric  > .lines >p')
+            // this.$el.find('.lyric').css('border', '1px solid red')
+            // console.log(allP.length) //36
+            let p
+            for (let i = 0; i < allP.length; i++) {
+                if (i === allP.length - 1) {
+                    // console.log(allP[i])
+                    p = allP[i]
+                    break
+                } else {
+                    let currentTime = allP.eq(i).attr('data-time')
+                    let nextTime = allP.eq(i + 1).attr('data-time')
+                    if (currentTime <= time && time < nextTime) {
+                        console.log(allP[i])
+                        p = allP[i]
+                        break
+                    }
+                }
+            }
+            console.log(p)
+            let pHeight = p.getBoundingClientRect().top
+            let linesHeight = this.$el.find('.lyric  > .lines')[0].getBoundingClientRect().top
+            let height = pHeight - linesHeight
+            console.log(height)
+            this.$el.find('.lyric  > .lines').css({
+                transform: `translateY(${- (height - 4) }px )`
+            })
+            $(p).addClass('active').siblings('.active').removeClass('active')
+
+
         },
         play() {
             this.$el.find('audio')[0].play()
@@ -59,6 +114,7 @@
             let id = this.getSongId()
 
             this.model.get(id).then(() => {
+                console.log(this.model.data.song.lyrics)
                 this.view.render(this.model.data)
 
             })
