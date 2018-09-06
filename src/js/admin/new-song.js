@@ -6,9 +6,7 @@
             $(this.el).html(this.template)
         }
     }
-
     let model = {}
-
     let controller = {
         init(view, model) {
             this.view = view
@@ -22,7 +20,7 @@
                 console.log(data.id)
                 this.deactive()
             })
-            $(this.view.el).on('click', ()=>{
+            $(this.view.el).on('click', () => {
                 window.eventHub.emit('new')
             })
         },
@@ -34,6 +32,4 @@
         }
     }
     controller.init(view, model)
-
-    // window.app.newSong = controller
 }
