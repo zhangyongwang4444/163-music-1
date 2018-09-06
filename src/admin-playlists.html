@@ -41,7 +41,15 @@
             }
             let model = {
                 create(data) {
-                    $.post()
+                    var PlayList = AV.Object.extend('PlayList');
+                    var playlist = new PlayList();
+                    playlist.set('name', data.name);
+                    playlist.set('summary', data.summary);
+                    playlist.save().then((newPlaylist) => {
+                        console.log(newPlaylist);
+                    }, (error) => {
+                        console.error(error);
+                    });
                 }
             }
             let controller = {
@@ -55,8 +63,25 @@
                     this.view.$el.on('submit', 'form', (e) => {
                         e.preventDefault()
                         let form = this.view.$form.get(0)
-                        console.log(form.name.value)
-                        console.log(form.summary.value)
+
+                        // 生成 data 
+                        let keys = ['name', 'summary']
+                        let data = {}
+                        keys.reduce((prev, item) => {
+                            prev[item] = form[item].value
+                            return prev
+                        }, data)
+
+                        console.log(data)
+                        this.model.create(data)
+
+                        // let data = {
+                        //     name: form.name.value.trim(),
+                        //     summary: form.summary.value.trim()
+                        // }
+
+                        // console.log(form.name.value.trim())
+                        // console.log(form.summary.value.trim())
                     })
                 }
             }
